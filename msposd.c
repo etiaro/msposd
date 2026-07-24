@@ -1182,7 +1182,7 @@ static void poll_msp(evutil_socket_t sock, short event, void *arg) {
 
 static int handle_data(const char *port_name, int baudrate, const char *out_addr) {
 	struct event *sig_int = NULL, *in_ev = NULL, *temp_tmr = NULL, *msp_tmr = NULL;
-	struct event *sig_term;
+	struct event *sig_term = NULL;
 	int ret = EXIT_SUCCESS;
 
 	// Read from UDP
@@ -1390,13 +1390,15 @@ err:
 
 	if (sig_int)
 		event_free(sig_int);
+	if (sig_term)
+		event_free(sig_term);
+
+	CloseMSP();
 
 	if (base)
 		event_base_free(base);
 
 	libevent_global_shutdown();
-
-	CloseMSP();
 
 	return ret;
 }
