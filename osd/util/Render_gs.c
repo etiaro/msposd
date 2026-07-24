@@ -516,9 +516,10 @@ void FlushDrawing() {
     if (x11_event == NULL && base != NULL) {
         // Attach X11 display's file descriptor to the existing msposd
         // event_base
-        struct event *x11_event =
+        x11_event =
             event_new(base, ConnectionNumber(display), EV_READ | EV_PERSIST, event_callback, NULL);
-        event_add(x11_event, NULL);
+        if (x11_event)
+            event_add(x11_event, NULL);
 
         XGrabKey(display, XKeysymToKeycode(display, XK_Up), Mod1Mask, RootWindow, True,
             GrabModeAsync,
